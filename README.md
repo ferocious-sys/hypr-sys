@@ -12,43 +12,29 @@ This configuration is based on [end-4's Hyprland dotfiles](https://github.com/en
 - **Song recognition** — Quickshell can listen to the default output monitor or microphone through SongRec, then show the recognized track.
 - **Workspace bend animation** — an optional Lua hook that briefly bends a custom shader after rapid workspace switching.
 
-## Quick setup on Arch Linux
+## Completely new? Use the quick installer
 
-This repository provides snippets. It does not replace a full Hyprland or Quickshell desktop configuration.
+This one-command setup adds the hypr-sys features to an existing Arch Linux desktop with Hyprland and end-4's Illogical Impulse Quickshell config. It does not install a complete desktop from a fresh operating system. If you have not set up Hyprland yet, follow the [end-4 setup guide](https://end-4.github.io/dots-hyprland-wiki/en/) first.
 
-1. Install the tools used by the snippets:
+Clone this repo and run the installer:
 
-   ```sh
-   sudo pacman -S hyprpicker songrec jq pipewire-pulse wl-clipboard git
-   ```
+```sh
+git clone https://github.com/ferocious-sys/hypr-sys.git
+cd hypr-sys
+./install.sh
+```
 
-2. Install Quickshell from the AUR using your preferred helper. For example:
+The installer checks for the end-4 configuration, offers to install missing Arch packages, installs Quickshell with `paru` or `yay` when available, and backs up files before replacing them. It installs the color picker binding, song recognition helper, and workspace animation files. Restart Hyprland and Quickshell after setup.
 
-   ```sh
-   paru -S quickshell
-   ```
+The script supports Arch Linux. It uses `sudo` for system packages and needs an AUR helper if Quickshell is missing. Review [`install.sh`](install.sh) before running it.
 
-   Quickshell is also available as `quickshell-git` if you prefer its development build.
+### Manual setup
 
-3. Clone this repository:
+Install `hyprpicker`, `songrec`, `jq`, `pipewire-pulse`, and `wl-clipboard` with your package manager. Install Quickshell separately if needed. Add the color picker binding from [`hypr/custom/color-picker.lua`](hypr/custom/color-picker.lua) to a Lua config loaded by Hyprland.
 
-   ```sh
-   git clone https://github.com/ferocious-sys/hypr-sys.git
-   cd hypr-sys
-   ```
+Copy [`quickshell/musicRecognition/recognize-music.sh`](quickshell/musicRecognition/recognize-music.sh) to `~/.config/quickshell/ii/scripts/musicRecognition/recognize-music.sh` and make it executable. The end-4 music recognition service calls it with `-s monitor` or `-s input`.
 
-4. Add the color picker binding to a Lua file loaded by your Hyprland configuration. The snippet is in [`hypr/custom/color-picker.lua`](hypr/custom/color-picker.lua). Ensure `hyprpicker` and a Wayland clipboard tool are installed.
-
-5. Install the recognition script and make it executable:
-
-   ```sh
-   install -Dm755 quickshell/musicRecognition/recognize-music.sh \\
-     ~/.config/quickshell/ii/scripts/musicRecognition/recognize-music.sh
-   ```
-
-   Connect this script to a Quickshell music recognition service or toggle in your own shell configuration. The script accepts `-s monitor` or `-s input`, selects the default PipeWire/PulseAudio device, and prints the first recognized track as JSON. It needs `songrec`, `pactl`, `jq`, and Bash at runtime.
-
-6. To try the workspace effect, copy [`hypr/custom/workspace-bend.lua`](hypr/custom/workspace-bend.lua) into your Hyprland Lua config and copy the corresponding shader files into `~/.config/hypr/custom/shaders/`. The Lua file expects shaders named `workspace-bend-1.frag` through `workspace-bend-8.frag`.
+Copy [`hypr/custom/workspace-bend.lua`](hypr/custom/workspace-bend.lua) and the shaders in [`hypr/custom/shaders/`](hypr/custom/shaders/) to their matching paths under `~/.config/hypr/custom/`.
 
 ## Build dependencies from source
 
